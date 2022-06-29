@@ -40,10 +40,12 @@ const int GreenledPin = 5;
 
 char osc_addr_button[8] = "/button";
 
+/* below the screen display i2c address is 0x27. Some screens are 0x3F, and it's possible others are neither of these two addresses. There are i2c scanner programs to help identify the address if no luck */
+
 // display vars
 int lcdColumns = 20;
 int lcdRows = 4;
-LiquidCrystal_I2C lcd(0x3F, lcdColumns, lcdRows);
+LiquidCrystal_I2C lcd(0x27, lcdColumns, lcdRows);
 
 
 bool in_light_phrase = false;
@@ -52,9 +54,9 @@ int light_phrase_delay_time = -1;
 
 // networking vars
 WiFiUDP Udp;
-unsigned int local_port = 3006;
+unsigned int local_port = 5002;
 IPAddress dest_ip;
-unsigned int dest_port = 3007;
+unsigned int dest_port = 5003;
 
 // ip reporting vars
 bool send_ip = false;
@@ -99,7 +101,7 @@ void setup() {
   lcd.init();
   // turn on LCD backlight
   lcd.backlight();
-  display_text("Stompbox 2.0", "");
+  display_text("Cuebox", "");
 
   WiFi.onEvent(WiFiEvent);
   ETH.begin();
@@ -274,7 +276,7 @@ int findBreaks(String thing, int l){
 void display_ip() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Stompbox IP : Port");
+  lcd.print("Cuebox IP : Port");
   lcd.setCursor(0, 1);
   lcd.print(ETH.localIP());
   lcd.print(" : ");
@@ -295,6 +297,8 @@ void display_text(String line1, String line2) {
   lcd.print(line2);
 }
 
+/* to center text on display, change each lcd.setCursor to (offset, x). As of now, it's left-justified */
+
 void cue_display(OSCMessage &msg){
   lcd.clear();
   char text[96];
@@ -309,25 +313,25 @@ void cue_display(OSCMessage &msg){
     
     int last = findBreaks(t,20)+1;
     int offset=(20-last) / 2;
-    lcd.setCursor(offset, 0);
+    lcd.setCursor(0, 0);
     lcd.print(t.substring(0, last));
     t.remove(0, last);
     
     last = findBreaks(t,20)+1;
     offset = (20-last) / 2;
-    lcd.setCursor(offset, 1);
+    lcd.setCursor(0, 1);
     lcd.print(t.substring(0, last));
     t.remove(0, last);
 
     last=findBreaks(t, 20)+1;
     offset = (20-last) / 2;
-    lcd.setCursor(offset, 2);
+    lcd.setCursor(0, 2);
     lcd.print(t.substring(0, last));
     t.remove(0, last);
 
     last=findBreaks(t, 20)+1;
     offset = (20-last) / 2;
-    lcd.setCursor(offset, 3);
+    lcd.setCursor(0, 3);
     lcd.print(t.substring(0, last));
 
 

@@ -29,6 +29,8 @@ const int GreenledPin = 5;
 
 char osc_addr_button[8] = "/button";
 
+/* below the screen display i2c address is 0x27. Some screens are 0x3F, and it's possible others are neither of these two addresses. There are i2c scanner programs to help identify the address if no luck */
+
 // display vars
 int lcdColumns = 20;
 int lcdRows = 4;
@@ -75,7 +77,7 @@ void setup() {
   lcd.init();
   // turn on LCD backlight
   lcd.backlight();
-  display_text("Stompbox 2.0", "");
+  display_text("Cuebox 2.0", "");
 
   WiFi.onEvent(WiFiEvent);
   ETH.begin();
@@ -233,7 +235,7 @@ int findBreaks(String thing, int l){
 void display_ip() {
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Stompbox IP : Port");
+  lcd.print("Cuebox IP : Port");
   lcd.setCursor(0, 1);
   lcd.print(ETH.localIP());
   lcd.print(" : ");
@@ -253,6 +255,8 @@ void display_text(String line1, String line2) {
   lcd.setCursor(0, 1);
   lcd.print(line2);
 }
+
+/* to left-justify text on display, change each lcd.setCursor to (0, x). As of now, it's centered */
 
 void cue_display(OSCMessage &msg){
   lcd.clear();
@@ -315,7 +319,7 @@ void WiFiEvent(WiFiEvent_t event)
       Serial.println("ETH Started");
       display_text("Ethernet Starting", "Standby..");
       //set eth hostname here
-      ETH.setHostname("Stompbox_001");
+      ETH.setHostname("Cuebox_001");
       break;
     case SYSTEM_EVENT_ETH_CONNECTED:
       Serial.println("ETH Connected");
